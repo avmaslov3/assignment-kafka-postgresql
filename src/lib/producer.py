@@ -15,6 +15,7 @@ import json
 from lib.checker import *
 import time
 
+
 def serializer(r: CheckerResults):
     return json.dumps(r._asdict()).encode("utf-8")
 
@@ -24,9 +25,9 @@ def send_checker_results_to_kafka(results: List[CheckerResults],
     producer = KafkaProducer(
         bootstrap_servers=KAFKA_SERVER,
         security_protocol="SSL",
-        ssl_cafile="../../ca.pem",
-        ssl_certfile="../../service.cert",
-        ssl_keyfile="../../service.key",
+        ssl_cafile=FILE_SSL_CAFILE,
+        ssl_certfile=FILE_SSL_CERTFILE,
+        ssl_keyfile=FILE_SSL_KEYFILE,
     )
 
     for i, item in enumerate(results):
@@ -37,5 +38,3 @@ def send_checker_results_to_kafka(results: List[CheckerResults],
     # Force sending of all messages
     producer.flush()
 
-
-send_checker_results_to_kafka([checker()])

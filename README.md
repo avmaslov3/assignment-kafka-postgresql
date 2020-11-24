@@ -1,4 +1,7 @@
 
+_Note: currently settings (urls, passwords) are stored in `settings.py` just for the sake of convenience.
+ A better approach would be to pass this information as environmental variables or command line arguments._
+
 Database connection command
 
 ```
