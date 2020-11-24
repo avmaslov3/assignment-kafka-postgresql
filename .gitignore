@@ -1,0 +1,9 @@
+venv/
+.idea/
+__pycache__/
+lib.egg-info/
+*.cert
+*.key
+*.pem
+*.txt
+settings.py
