@@ -1,13 +1,17 @@
-from lib.common import *
+"""
+Run all steps sequentially to demonstrate usage example.
+"""
 from lib.producer import *
 from lib.consumer import *
+from loguru import logger
 
 urls = [
     "https://requests.readthedocs.io/en/master/user/quickstart/",
     "https://requests.readthedocs.io"
 ]
 
-send_checker_results_to_kafka([checker(url) for url in urls])
+for url in urls:
+    send_checker_result_to_kafka(measure_url_metrics(url))
 data_from_kafka = read_data_from_kafka()
 for e in data_from_kafka:
-    print("Receiving: {}".format(e))
+    logger.info("Receiving: {}".format(e))

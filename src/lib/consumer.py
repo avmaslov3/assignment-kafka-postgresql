@@ -6,7 +6,11 @@ from kafka import KafkaConsumer
 from loguru import logger
 
 
+@logger.catch()
 def read_data_from_kafka():
+    """
+    Based on https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
+    """
     consumer = KafkaConsumer(
         KAFKA_TOPIC,
         auto_offset_reset="earliest",
