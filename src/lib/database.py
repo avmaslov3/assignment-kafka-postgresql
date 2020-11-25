@@ -1,7 +1,7 @@
 """
 https://help.aiven.io/en/articles/489573-getting-started-with-aiven-postgresqldaxmmll97fcuv7x6
 """
-from src.lib.settings import *
+from lib.settings import *
 from psycopg2.extras import RealDictCursor
 import psycopg2 as pg2
 

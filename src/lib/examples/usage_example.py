@@ -11,7 +11,10 @@ urls = [
 ]
 
 for url in urls:
-    send_checker_result_to_kafka(measure_url_metrics(url))
+    metrics = measure_metrics(url)
+    logger.info("Received metrics: {}".format(metrics))
+    send_data_to_kafka(metrics)
+    logger.info(".. sent to Kafka service")
 data_from_kafka = get_data_from_kafka()
 for e in data_from_kafka:
-    logger.info("Receiving: {}".format(e))
+    logger.info("Received from Kafka service: {}".format(e))

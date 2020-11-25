@@ -22,8 +22,8 @@ logger.add("debug.log", format="{time} {level} {message}", level="DEBUG",
 
 
 @logger.catch
-def measure_url_metrics(url: str,
-                        retrieve_page_text: bool = False) -> CheckerResults:
+def measure_metrics(url: str,
+                    retrieve_page_text: bool = False) -> ResponseMetrics:
     """
     TODO: The website checker should perform the checks periodically and
     collect the
@@ -42,8 +42,8 @@ def measure_url_metrics(url: str,
     web_page_text = None
     if retrieve_page_text:
         web_page_text = requests.get(url).text[:50]
-    result = CheckerResults(status_code, response_time_seconds,
-                            web_page_text, url)
+    result = ResponseMetrics(status_code, response_time_seconds,
+                             web_page_text, url)
     return result
 
 
@@ -57,7 +57,7 @@ producer = KafkaProducer(
 
 
 @logger.catch
-def send_checker_result_to_kafka(result: CheckerResults) -> None:
+def send_data_to_kafka(result: ResponseMetrics) -> None:
     """
     Based on https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
     """
@@ -74,7 +74,7 @@ def send_checker_result_to_kafka(result: CheckerResults) -> None:
         producer.flush()
 
 
-def serializer(r: CheckerResults):
+def serializer(r: ResponseMetrics):
     checker_results_as_json = json.dumps(r._asdict()).encode("utf-8")
     return checker_results_as_json
 
@@ -86,9 +86,9 @@ def checker(url: str, max_n: int = None):
             count += 1
             if max_n and count > max_n:
                 break
-            metrics = measure_url_metrics(url)
+            metrics = measure_metrics(url)
             logger.info("Received results from URL: {}".format(metrics))
-            send_checker_result_to_kafka(metrics)
+            send_data_to_kafka(metrics)
             logger.info("Sent to Kafka service: {}".format(metrics))
             time.sleep(1)
     except KeyboardInterrupt:

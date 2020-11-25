@@ -1,22 +1,15 @@
-import psycopg2 as pg2
-from psycopg2.extras import RealDictCursor
-from lib.settings import *
+from lib.database import request_db, drop_if_exist_and_create_table
+import psycopg2
+from psycopg2 import errors
 
 
 def test_database_connection():
     try:
-        connect = pg2.connect(host=POSTGRESQL_HOST,
-                              port=POSTGRESQL_PORT,
-                              user=POSTGRESQL_USER,
-                              database=POSTGRESQL_DB_NAME,
-                              password=POSTGRESQL_PASSWORD)
-        c = connect.cursor(cursor_factory=RealDictCursor)
-        c.execute("SELECT VERSION()")
-        result = c.fetchone()
-        print(result)
-        return True
-    except pg2.OperationalError as e:
-        raise pg2.OperationalError("Database connection error") from e
-        return False
-
-
+        request_db("SELECT * FROM METRICS;")
+        db_version = request_db("SELECT VERSION()")
+        assert len(db_version) == 1
+    except psycopg2.OperationalError as e:
+        raise psycopg2.OperationalError("Database connection error") from e
+    except psycopg2.errors.UndefinedTable as e:
+        raise psycopg2.errors.UndefinedTable("Table metrics doesn't exist - "
+                                             "create table") from e
