@@ -39,3 +39,8 @@ pytest
 ```
 
 ### Installation for usage
+
+```
+python3 -m venv venv
+pip install git+https://github.com/al31415/assignment-kafka-postgresql
+```
