@@ -24,17 +24,16 @@ def get_data_from_kafka():
     """
     Based on https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
     """
-
     # Call poll twice. First call will just assign partitions for our
     # consumer without actually returning anything
+    data = []
     for _ in range(2):
         raw_msgs = consumer.poll(timeout_ms=1000)
         for tp, msgs in raw_msgs.items():
             for msg in msgs:
-                logger.info("Receiving to consumer: {}".format(msg))
-                yield msg.value
-
+                data.append(msg.value)
     # Commit offsets so we won't get the same messages again
     consumer.commit()
+    return data
 
 

@@ -4,9 +4,10 @@ https://help.aiven.io/en/articles/489573-getting-started-with-aiven-postgresqlda
 from lib.settings import *
 from psycopg2.extras import RealDictCursor
 import psycopg2 as pg2
+from lib.common import *
 
 
-def write_message_to_db():
+def write_message_to_db(message: ResponseMetrics):
     connect = pg2.connect(host=POSTGRESQL_HOST,
                           port=POSTGRESQL_PORT,
                           user=POSTGRESQL_USER,
@@ -17,11 +18,8 @@ def write_message_to_db():
         with connect.cursor(cursor_factory=RealDictCursor) as cursor:
             insert_query = """insert into """ + POSTGRESQL_TABLE_NAME + \
                            """ (url, status_code, response_time) values (%s, %s, %s); """
-            print(insert_query)
-            cursor.execute(insert_query, ('url', 200, 1.29))
-
-    test_query_result = request_db("select * from metrics;")
-    print(test_query_result)
+            cursor.execute(insert_query, (message.url, message.status_code,
+                                          message.response_time_seconds))
 
 
 def request_db(query: str):
