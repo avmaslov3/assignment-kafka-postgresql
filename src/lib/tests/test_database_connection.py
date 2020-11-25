@@ -3,7 +3,7 @@ from psycopg2.extras import RealDictCursor
 from lib.settings import *
 
 
-def send_test_request():
+def test_database_connection():
     try:
         connect = pg2.connect(host=POSTGRESQL_HOST,
                               port=POSTGRESQL_PORT,
@@ -18,9 +18,5 @@ def send_test_request():
     except pg2.OperationalError as e:
         raise pg2.OperationalError("Database connection error") from e
         return False
-
-
-def test_connection():
-    assert send_test_request()
 
 

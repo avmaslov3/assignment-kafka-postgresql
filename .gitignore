@@ -7,3 +7,5 @@ lib.egg-info/
 *.pem
 *.txt
 settings.py
+*.log
+*.drawio

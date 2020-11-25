@@ -1,5 +1,4 @@
 from lib.common import *
-from lib.checker import *
 from lib.producer import *
 from lib.consumer import *
 
