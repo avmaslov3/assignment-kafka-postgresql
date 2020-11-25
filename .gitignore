@@ -9,3 +9,4 @@ lib.egg-info/
 settings.py
 *.log
 *.drawio
+setenv.sh

@@ -41,6 +41,8 @@ pytest
 ### Installation for usage
 
 ```
+source setenv.sh
 python3 -m venv venv
+source venv/bin/activate
 pip install git+https://github.com/al31415/assignment-kafka-postgresql
 ```
