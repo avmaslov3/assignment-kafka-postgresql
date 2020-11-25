@@ -6,22 +6,24 @@ from kafka import KafkaConsumer
 from loguru import logger
 
 
+consumer = KafkaConsumer(
+    KAFKA_TOPIC,
+    auto_offset_reset="earliest",
+    bootstrap_servers=KAFKA_SERVER,
+    client_id="demo-client-1",
+    group_id="demo-group",
+    security_protocol="SSL",
+    ssl_cafile=FILE_SSL_CAFILE,
+    ssl_certfile=FILE_SSL_CERTFILE,
+    ssl_keyfile=FILE_SSL_KEYFILE,
+)
+
+
 @logger.catch()
-def read_data_from_kafka():
+def get_data_from_kafka():
     """
     Based on https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
     """
-    consumer = KafkaConsumer(
-        KAFKA_TOPIC,
-        auto_offset_reset="earliest",
-        bootstrap_servers=KAFKA_SERVER,
-        client_id="demo-client-1",
-        group_id="demo-group",
-        security_protocol="SSL",
-        ssl_cafile=FILE_SSL_CAFILE,
-        ssl_certfile=FILE_SSL_CERTFILE,
-        ssl_keyfile=FILE_SSL_KEYFILE,
-    )
 
     # Call poll twice. First call will just assign partitions for our
     # consumer without actually returning anything

@@ -12,6 +12,6 @@ urls = [
 
 for url in urls:
     send_checker_result_to_kafka(measure_url_metrics(url))
-data_from_kafka = read_data_from_kafka()
+data_from_kafka = get_data_from_kafka()
 for e in data_from_kafka:
     logger.info("Receiving: {}".format(e))

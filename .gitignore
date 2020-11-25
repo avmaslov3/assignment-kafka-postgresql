@@ -6,7 +6,6 @@ lib.egg-info/
 *.key
 *.pem
 *.txt
-settings.py
 *.log
 *.drawio
 setenv.sh

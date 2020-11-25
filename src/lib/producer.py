@@ -7,30 +7,22 @@ check results to a Kafka topic
 https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
 
 """
-from kafka import KafkaProducer
+from kafka import KafkaProducer, errors
 from typing import List
-from lib.settings import *
 from lib.common import *
 import json
 import time
 import requests
 from loguru import logger
-import argparse
 import sys
-
-parser = argparse.ArgumentParser('REPL')
-parser.add_argument("--url")
-parser.add_argument('--ca-file', help='Path to ca.pem file')
-parser.add_argument('--cert-file', help='Path to service.cert file')
-parser.add_argument('--key-file', help='Path to service.key file')
-args = parser.parse_args()
+from lib.settings import *
 
 logger.add("debug.log", format="{time} {level} {message}", level="DEBUG",
            rotation="1 MB", compression="zip")
 
 
 @logger.catch
-def measure_url_metrics(url: str = "https://www.python.org/",
+def measure_url_metrics(url: str,
                         retrieve_page_text: bool = False) -> CheckerResults:
     """
     TODO: The website checker should perform the checks periodically and
@@ -55,23 +47,31 @@ def measure_url_metrics(url: str = "https://www.python.org/",
     return result
 
 
+producer = KafkaProducer(
+    bootstrap_servers=os.getenv("KAFKA_SERVER"),
+    security_protocol="SSL",
+    ssl_cafile=FILE_SSL_CAFILE,
+    ssl_certfile=FILE_SSL_CERTFILE,
+    ssl_keyfile=FILE_SSL_KEYFILE,
+)
+
+
 @logger.catch
 def send_checker_result_to_kafka(result: CheckerResults) -> None:
     """
     Based on https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
     """
-    producer = KafkaProducer(
-        bootstrap_servers=KAFKA_SERVER,
-        security_protocol="SSL",
-        ssl_cafile=FILE_SSL_CAFILE,
-        ssl_certfile=FILE_SSL_CERTFILE,
-        ssl_keyfile=FILE_SSL_KEYFILE,
-    )
 
     message = serializer(result)
-    producer.send(KAFKA_TOPIC, message)
-    # Force sending of all messages
-    producer.flush()
+    try:
+        producer.send("KAFKA_TOPIC", message)
+    except errors.KafkaTimeoutError as e:
+        logger.info(e)
+    finally:
+        # TODO: Maybe this is not correct order as in the sample code messages
+        #  are sent in iteration process
+        # Force sending of all messages
+        producer.flush()
 
 
 def serializer(r: CheckerResults):
@@ -79,17 +79,17 @@ def serializer(r: CheckerResults):
     return checker_results_as_json
 
 
-def checker():
+def checker(url: str):
     try:
         while True:
-            metrics = measure_url_metrics(args.url)
-            logger.info("Received results from URL".format(metrics))
+            metrics = measure_url_metrics(url)
+            logger.info("Received results from URL: {}".format(metrics))
             send_checker_result_to_kafka(metrics)
-            logger.info("Sending to Kafka service: {}".format(metrics))
+            logger.info("Sent to Kafka service: {}".format(metrics))
             time.sleep(1)
     except KeyboardInterrupt:
         print("Buy!")
 
 
 if __name__ == "__main__":
-    checker()
+    checker("https://docs.python.org/3/")
