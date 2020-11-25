@@ -1,6 +1,14 @@
+# Documentation
 
-_Note: currently settings (urls, passwords) are stored in `settings.py` just for the sake of convenience.
- A better approach would be to pass this information as environmental variables or command line arguments._
+## Installation for usage
+
+```
+source setenv.sh
+python3 -m venv venv
+source venv/bin/activate
+pip install git+https://github.com/al31415/assignment-kafka-postgresql
+python3 -c "from lib import checker; checker('https://www.python.org/')"
+```
 
 ## Usage examples 
 
@@ -38,11 +46,3 @@ Run tests
 pytest
 ```
 
-### Installation for usage
-
-```
-source setenv.sh
-python3 -m venv venv
-source venv/bin/activate
-pip install git+https://github.com/al31415/assignment-kafka-postgresql
-```

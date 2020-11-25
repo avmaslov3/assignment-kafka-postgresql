@@ -79,9 +79,13 @@ def serializer(r: CheckerResults):
     return checker_results_as_json
 
 
-def checker(url: str):
+def checker(url: str, max_n: int = None):
+    count = 0
     try:
         while True:
+            count += 1
+            if max_n and count > max_n:
+                break
             metrics = measure_url_metrics(url)
             logger.info("Received results from URL: {}".format(metrics))
             send_checker_result_to_kafka(metrics)
