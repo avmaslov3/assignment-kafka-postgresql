@@ -65,6 +65,7 @@ def send_data_to_kafka(result: ResponseMetrics) -> None:
     message = serializer(result)
     try:
         producer.send("KAFKA_TOPIC", message)
+        producer.flush()
     except errors.KafkaTimeoutError as e:
         logger.info(e)
     finally:

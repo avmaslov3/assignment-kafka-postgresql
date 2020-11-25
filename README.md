@@ -26,9 +26,8 @@ Database connection command from terminal
 psql --host=pg-14bf6fb2-rus314-305c.aivencloud.com --port=29300 --username=avnadmin --dbname=metrics
 ```
 
-## Installation
 
-### For development / testing
+## Installation for development / testing / debugging
 
 Install dev version
 
