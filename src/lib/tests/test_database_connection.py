@@ -5,7 +5,7 @@ from psycopg2 import errors
 
 def test_database_connection():
     try:
-        request_db("SELECT * FROM METRICS;")
+        request_db("SELECT url, status_code, response_time FROM METRICS;")
         db_version = request_db("SELECT VERSION()")
         assert len(db_version) == 1
     except psycopg2.OperationalError as e:

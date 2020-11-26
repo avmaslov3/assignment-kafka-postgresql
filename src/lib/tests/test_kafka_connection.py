@@ -17,5 +17,7 @@ def test_kafka_connection():
         )
         r = consumer.topics()
         assert r == set(['metrics'])
+    except AssertionError as e:
+        raise AssertionError("Please create 'metrics' topic") from e
     except errors.NoBrokersAvailable as e:
         raise errors.NoBrokersAvailable("Kafka connection error") from e

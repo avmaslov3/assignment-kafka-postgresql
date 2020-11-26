@@ -60,6 +60,3 @@ def drop_if_exist_and_create_table():
                      status_code text, 
                      response_time float); """
             cursor.execute(req)
-
-
-

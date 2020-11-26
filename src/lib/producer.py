@@ -59,18 +59,11 @@ def send_data_to_kafka(result: ResponseMetrics) -> None:
         ssl_certfile=FILE_SSL_CERTFILE,
         ssl_keyfile=FILE_SSL_KEYFILE,
     )
-
-    message = serializer(result)
-    try:
-        producer.send("KAFKA_TOPIC", message)
-        producer.flush()
-    except errors.KafkaTimeoutError as e:
-        logger.info(e)
-    finally:
-        # TODO: Maybe this is not correct order as in the sample code messages
-        #  are sent in iteration process
-        # Force sending of all messages
-        producer.flush()
+    for res in [result]:
+        message = serializer(res)
+        producer.send(KAFKA_TOPIC, message)
+    # Force sending of all messages
+    producer.flush()
 
 
 def serializer(r: ResponseMetrics):
@@ -92,5 +85,3 @@ def checker(url: str, max_n: int = None):
             time.sleep(1)
     except KeyboardInterrupt:
         print("Buy!")
-
-
