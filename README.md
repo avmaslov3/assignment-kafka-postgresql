@@ -45,7 +45,8 @@ python3 -c "from lib import request_db; print(request_db('select * from metrics;
 In order to run tests repository should be cloned and editable installation should be done.
 
 ```
-git clone ...
+git clone https://github.com/al31415/assignment-kafka-postgresql.git
+cd assignment-kafka-postgresql
 python3 -m venv venv
 source venv/bin/activate
 pip3 install -r requirements.txt
