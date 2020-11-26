@@ -49,7 +49,6 @@ git clone https://github.com/al31415/assignment-kafka-postgresql.git
 cd assignment-kafka-postgresql
 python3 -m venv venv
 source venv/bin/activate
-pip3 install -r requirements.txt
 pip install -e .
 ```
 
