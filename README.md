@@ -1,6 +1,6 @@
 # Documentation
 
-<img src="scheme.png" width=200>
+<img src="scheme.png" width=450>
 
 ## Installation for usage
 
