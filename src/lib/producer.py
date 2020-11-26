@@ -8,7 +8,6 @@ https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
 
 """
 from kafka import KafkaProducer, errors
-from typing import List
 from lib.common import *
 import json
 import time
@@ -21,11 +20,36 @@ logger.add("debug.log", format="{time} {level} {message}", level="DEBUG",
            rotation="1 MB", compression="zip")
 
 
+@logger.catch()
+def checker(url: str, max_n: int = None, sleep_interval: float = 1.0) -> None:
+    """
+    Main producer function.
+    Send requests periodically to URL, collects response metrics, and sends
+    them to kafka service.
+    :param url:
+    :param max_n: Optional maximum number of requests, if None then forever
+    :param sleep_interval: Optional delay between requests.
+    """
+    count = 0
+    try:
+        while True:
+            count += 1
+            if max_n and count > max_n:
+                break
+            metrics = measure_metrics(url)
+            logger.info("Received results from URL: {}".format(metrics))
+            send_to_kafka(metrics)
+            logger.info("Sent to Kafka service: {}".format(metrics))
+            time.sleep(sleep_interval)
+    except KeyboardInterrupt:
+        print("Stop producer!")
+
+
 @logger.catch
 def measure_metrics(url: str,
                     retrieve_page_text: bool = False) -> ResponseMetrics:
     """
-    TODO: The website checker should perform the checks periodically and
+    The website checker performs the checks periodically and
     collect the
     - HTTP response time,
     - error code returned,
@@ -71,18 +95,3 @@ def serializer(r: ResponseMetrics):
     return checker_results_as_json
 
 
-@logger.catch()
-def checker(url: str, max_n: int = None, sleep_interval: float = 1.0):
-    count = 0
-    try:
-        while True:
-            count += 1
-            if max_n and count > max_n:
-                break
-            metrics = measure_metrics(url)
-            logger.info("Received results from URL: {}".format(metrics))
-            send_to_kafka(metrics)
-            logger.info("Sent to Kafka service: {}".format(metrics))
-            time.sleep(sleep_interval)
-    except KeyboardInterrupt:
-        print("Stop producer!")

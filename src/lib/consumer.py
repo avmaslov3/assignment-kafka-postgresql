@@ -12,6 +12,29 @@ from lib.common import *
 
 
 @logger.catch()
+def consumer(sleep_interval: float = 1.0) -> None:
+    """
+    Main consumer function.
+    Retrieves messages from Kafka topic and sends them to PostgreSQL.
+    :param sleep_interval: Optional delay between request to Kafka service.
+    """
+    try:
+        while True:
+            data_kafka = read_from_kafka()
+            if len(data_kafka) > 0:
+                logger.info(f"Received data from Kafka. len(data) ="
+                            f" {len(data_kafka)}")
+                for metrics in data_kafka:
+                    send_to_database(metrics)
+                    logger.info(".. Sent to database")
+            else:
+                logger.info("Kafka topic is empty")
+            time.sleep(sleep_interval)
+    except KeyboardInterrupt:
+        print("Stop consumer!")
+
+
+@logger.catch()
 def read_from_kafka() -> List[ResponseMetrics]:
     """
     Based on https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
@@ -47,19 +70,3 @@ def read_from_kafka() -> List[ResponseMetrics]:
     return data
 
 
-@logger.catch()
-def consumer(sleep_interval: float = 1.0):
-    try:
-        while True:
-            data_kafka = read_from_kafka()
-            if len(data_kafka) > 0:
-                logger.info(f"Received data from Kafka. len(data) ="
-                            f" {len(data_kafka)}")
-                for metrics in data_kafka:
-                    send_to_database(metrics)
-                    logger.info(".. Sent to database")
-            else:
-                logger.info("Kafka topic is empty")
-            time.sleep(sleep_interval)
-    except KeyboardInterrupt:
-        print("Stop consumer!")

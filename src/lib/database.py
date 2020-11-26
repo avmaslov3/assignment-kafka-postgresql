@@ -7,7 +7,10 @@ import psycopg2 as pg2
 from lib.common import *
 
 
-def send_to_database(message: ResponseMetrics):
+def send_to_database(message: ResponseMetrics) -> None:
+    """
+    Send/save response metrics message into PostgreSQL instance.
+    """
     connect = pg2.connect(host=POSTGRESQL_HOST,
                           port=POSTGRESQL_PORT,
                           user=POSTGRESQL_USER,
@@ -41,8 +44,8 @@ def request_db(query: str):
 
 def drop_if_exist_and_create_table():
     """
-    Initialize empty table.
-    Delete if it already exists.
+    Utility function to initialize empty table in PostgreSQL instance.
+    Delete table if it already exists.
     """
     connect = pg2.connect(host=POSTGRESQL_HOST,
                           port=POSTGRESQL_PORT,
