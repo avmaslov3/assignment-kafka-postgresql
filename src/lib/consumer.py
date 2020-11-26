@@ -6,19 +6,6 @@ from kafka import KafkaConsumer
 from loguru import logger
 
 
-consumer = KafkaConsumer(
-    KAFKA_TOPIC,
-    auto_offset_reset="earliest",
-    bootstrap_servers=KAFKA_SERVER,
-    client_id="demo-client-1",
-    group_id="demo-group",
-    security_protocol="SSL",
-    ssl_cafile=FILE_SSL_CAFILE,
-    ssl_certfile=FILE_SSL_CERTFILE,
-    ssl_keyfile=FILE_SSL_KEYFILE,
-)
-
-
 @logger.catch()
 def get_data_from_kafka():
     """
@@ -26,6 +13,17 @@ def get_data_from_kafka():
     """
     # Call poll twice. First call will just assign partitions for our
     # consumer without actually returning anything
+    consumer = KafkaConsumer(
+        KAFKA_TOPIC,
+        auto_offset_reset="earliest",
+        bootstrap_servers=KAFKA_SERVER,
+        client_id="demo-client-1",
+        group_id="demo-group",
+        security_protocol="SSL",
+        ssl_cafile=FILE_SSL_CAFILE,
+        ssl_certfile=FILE_SSL_CERTFILE,
+        ssl_keyfile=FILE_SSL_KEYFILE,
+    )
     data = []
     for _ in range(2):
         raw_msgs = consumer.poll(timeout_ms=1000)

@@ -19,5 +19,3 @@ def test_kafka_connection():
         assert r == set(['metrics'])
     except errors.NoBrokersAvailable as e:
         raise errors.NoBrokersAvailable("Kafka connection error") from e
-
-

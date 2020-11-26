@@ -47,20 +47,18 @@ def measure_metrics(url: str,
     return result
 
 
-producer = KafkaProducer(
-    bootstrap_servers=os.getenv("KAFKA_SERVER"),
-    security_protocol="SSL",
-    ssl_cafile=FILE_SSL_CAFILE,
-    ssl_certfile=FILE_SSL_CERTFILE,
-    ssl_keyfile=FILE_SSL_KEYFILE,
-)
-
-
 @logger.catch
 def send_data_to_kafka(result: ResponseMetrics) -> None:
     """
     Based on https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
     """
+    producer = KafkaProducer(
+        bootstrap_servers=KAFKA_SERVER,
+        security_protocol="SSL",
+        ssl_cafile=FILE_SSL_CAFILE,
+        ssl_certfile=FILE_SSL_CERTFILE,
+        ssl_keyfile=FILE_SSL_KEYFILE,
+    )
 
     message = serializer(result)
     try:
@@ -96,5 +94,3 @@ def checker(url: str, max_n: int = None):
         print("Buy!")
 
 
-if __name__ == "__main__":
-    checker("https://docs.python.org/3/")

@@ -13,3 +13,4 @@ def test_database_connection():
     except psycopg2.errors.UndefinedTable as e:
         raise psycopg2.errors.UndefinedTable("Table metrics doesn't exist - "
                                              "create table") from e
+
