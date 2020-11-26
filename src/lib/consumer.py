@@ -59,9 +59,8 @@ def read_from_kafka() -> List[ResponseMetrics]:
             for msg in msgs:
                 json_value = json.loads(msg.value)
                 value = ResponseMetrics(json_value.get('status_code'),
-                                        json_value.get(
-                                            'response_time_seconds'),
-                                        json_value.get('web_page_text'),
+                                        json_value.get('response_time_seconds'),
+                                        json_value.get('regexp_pattern_found'),
                                         json_value.get('url')
                                         )
                 data.append(value)

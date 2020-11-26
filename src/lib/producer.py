@@ -15,17 +15,23 @@ import requests
 from loguru import logger
 import sys
 from lib.settings import *
+import re
 
 logger.add("debug.log", format="{time} {level} {message}", level="DEBUG",
            rotation="1 MB", compression="zip")
 
 
 @logger.catch()
-def checker(url: str, max_n: int = None, sleep_interval: float = 1.0) -> None:
+def checker(url: str,
+            max_n: int = None,
+            sleep_interval: float = 1.0,
+            regexp_pattern: str = r"") -> None:
     """
     Main producer function.
     Send requests periodically to URL, collects response metrics, and sends
     them to kafka service.
+    :param regexp_pattern: Optional regexp pattern to be searched in web
+    page content
     :param url: Web page URL to monitor metrics from
     :param max_n: Optional maximum number of requests, if None then forever
     :param sleep_interval: Optional delay between requests.
@@ -36,7 +42,7 @@ def checker(url: str, max_n: int = None, sleep_interval: float = 1.0) -> None:
             count += 1
             if max_n and count > max_n:
                 break
-            metrics = measure_metrics(url)
+            metrics = measure_metrics(url, regexp_pattern=regexp_pattern)
             logger.info("Received results from URL: {}".format(metrics))
             send_to_kafka(metrics)
             logger.info("Sent to Kafka service: {}".format(metrics))
@@ -47,7 +53,7 @@ def checker(url: str, max_n: int = None, sleep_interval: float = 1.0) -> None:
 
 @logger.catch
 def measure_metrics(url: str,
-                    retrieve_page_text: bool = False) -> ResponseMetrics:
+                    regexp_pattern=None) -> ResponseMetrics:
     """
     The website checker performs the checks periodically and
     collect the
@@ -63,12 +69,17 @@ def measure_metrics(url: str,
         sys.exit(1)
     response_time_seconds = r.elapsed.total_seconds()
     status_code = r.status_code
-    web_page_text = None
-    if retrieve_page_text:
-        web_page_text = requests.get(url).text[:50]
-    result = ResponseMetrics(status_code, response_time_seconds,
-                             web_page_text, url)
+    re_pattern_is_found = None
+    if regexp_pattern is not None:
+        web_page_text = requests.get(url).text
+        re_pattern_is_found = check_re_pattern_page_text(web_page_text,
+                                                         regexp_pattern)
+    result = ResponseMetrics(status_code,
+                             response_time_seconds,
+                             re_pattern_is_found,
+                             url)
     return result
+
 
 
 @logger.catch
