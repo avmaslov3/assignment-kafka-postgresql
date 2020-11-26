@@ -71,7 +71,8 @@ def serializer(r: ResponseMetrics):
     return checker_results_as_json
 
 
-def checker(url: str, max_n: int = None):
+@logger.catch()
+def checker(url: str, max_n: int = None, sleep_interval: float = 1.0):
     count = 0
     try:
         while True:
@@ -82,6 +83,6 @@ def checker(url: str, max_n: int = None):
             logger.info("Received results from URL: {}".format(metrics))
             send_data_to_kafka(metrics)
             logger.info("Sent to Kafka service: {}".format(metrics))
-            time.sleep(1)
+            time.sleep(sleep_interval)
     except KeyboardInterrupt:
-        print("Buy!")
+        print("Stop producer!")

@@ -4,6 +4,7 @@ https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
 from lib.settings import *
 from kafka import KafkaConsumer
 from loguru import logger
+import time
 
 
 @logger.catch()
@@ -35,3 +36,16 @@ def get_data_from_kafka():
     return data
 
 
+@logger.catch()
+def consumer(sleep_interval: float = 1.0):
+    try:
+        while True:
+            data_kafka = get_data_from_kafka()
+            if len(data_kafka) > 0:
+                logger.info(f"Received data from Kafka. len(data) ="
+                            f" {len(data_kafka)}")
+            else:
+                logger.info("Kafka topic is empty")
+            time.sleep(sleep_interval)
+    except KeyboardInterrupt:
+        print("Stop consumer!")
