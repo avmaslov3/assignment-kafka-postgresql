@@ -1,5 +1,7 @@
 # Documentation
 
+<img src="scheme.png" width=200>
+
 ## Installation for usage
 
 - _Note: for security reasons all settings like password, host adress, etc. are accessed through environmental variables. Please activate them using `setenv.sh` - I will send it by e-mail._
