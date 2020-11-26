@@ -1,3 +1,7 @@
+"""
+Module to export settings from environmental variables which are set
+using setenv.sh script.
+"""
 import os
 
 KAFKA_TOPIC = os.getenv("KAFKA_TOPIC")

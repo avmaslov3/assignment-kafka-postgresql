@@ -1,5 +1,5 @@
 """
-https://help.aiven.io/en/articles/489573-getting-started-with-aiven-postgresqldaxmmll97fcuv7x6
+Utility functions for making queries to database instance.
 """
 from lib.settings import *
 from psycopg2.extras import RealDictCursor

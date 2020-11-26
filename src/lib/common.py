@@ -1,9 +1,7 @@
 """
-Common across modules data and functions
+Common across modules data and functions.
 """
 from collections import namedtuple
-import glob
-import os
 
 ResponseMetrics = namedtuple('ResponseMetrics',
                              ['status_code',
