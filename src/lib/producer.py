@@ -26,7 +26,7 @@ def checker(url: str, max_n: int = None, sleep_interval: float = 1.0) -> None:
     Main producer function.
     Send requests periodically to URL, collects response metrics, and sends
     them to kafka service.
-    :param url:
+    :param url: Web page URL to monitor metrics from
     :param max_n: Optional maximum number of requests, if None then forever
     :param sleep_interval: Optional delay between requests.
     """
