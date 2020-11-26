@@ -59,10 +59,10 @@ def send_data_to_kafka(result: ResponseMetrics) -> None:
         ssl_certfile=FILE_SSL_CERTFILE,
         ssl_keyfile=FILE_SSL_KEYFILE,
     )
-    for res in [result]:
-        message = serializer(res)
-        producer.send(KAFKA_TOPIC, message)
+    message = serializer(result)
+    producer.send(KAFKA_TOPIC, message)
     # Force sending of all messages
+    # TODO: not sure if needed
     producer.flush()
 
 
