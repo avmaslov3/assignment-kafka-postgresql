@@ -2,8 +2,9 @@
 
 ## Installation for usage
 
+- _Note: for security reasons all settings like password, host adress, etc. are accessed through environmental variables. Please activate them using `setenv.sh` - I will send it by e-mail._
+
 ```
-source setenv.sh
 python3 -m venv venv
 source venv/bin/activate
 pip install git+https://github.com/al31415/assignment-kafka-postgresql
