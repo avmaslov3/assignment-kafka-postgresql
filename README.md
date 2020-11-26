@@ -28,7 +28,7 @@ source setenv.sh
 run producer and consumer
 
 ```
-python3 src/lib/examples/run_producer.py https://docs.python.org/3/library/re.html --sleep_interval 1 --regexp "[a]{6}"
+python3 run_producer.py https://docs.python.org/3/library/re.html --sleep_interval 1 --regexp "[a]{6}"
 python3 run_consumer.py --sleep_interval 1
 ```
 
