@@ -48,7 +48,7 @@ def measure_metrics(url: str,
 
 
 @logger.catch
-def send_data_to_kafka(result: ResponseMetrics) -> None:
+def send_to_kafka(result: ResponseMetrics) -> None:
     """
     Based on https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
     """
@@ -81,7 +81,7 @@ def checker(url: str, max_n: int = None, sleep_interval: float = 1.0):
                 break
             metrics = measure_metrics(url)
             logger.info("Received results from URL: {}".format(metrics))
-            send_data_to_kafka(metrics)
+            send_to_kafka(metrics)
             logger.info("Sent to Kafka service: {}".format(metrics))
             time.sleep(sleep_interval)
     except KeyboardInterrupt:

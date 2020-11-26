@@ -11,7 +11,7 @@ def test_write_to_table():
     """
     Write dummy data to PostgreSQL and read back
     """
-    write_message_to_db(ResponseMetrics(200, 15, None, 'https'))
+    send_to_database(ResponseMetrics(200, 15, None, 'https'))
     res = request_db("SELECT * FROM METRICS;")[-1]
     logger.info(res)
 
@@ -26,12 +26,12 @@ urls = ["https://requests.readthedocs.io"]
 for url in urls:
     metrics = measure_metrics(url)
     logger.info("Received metrics: {}".format(metrics))
-    send_data_to_kafka(metrics)
+    send_to_kafka(metrics)
     logger.info(".. message was sent to Kafka service")
-data_from_kafka = get_data_from_kafka()
+data_from_kafka = read_from_kafka()
 for message in data_from_kafka:
     logger.info("Received from Kafka service: {}".format(message))
-    write_message_to_db(message)
+    send_to_database(message)
     logger.info("..Saved into database")
 
 test_query = request_db("SELECT * FROM METRICS;")

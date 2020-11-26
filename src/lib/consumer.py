@@ -2,19 +2,23 @@
 https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
 """
 from lib.settings import *
+from lib.database import *
 from kafka import KafkaConsumer
 from loguru import logger
 import time
+import json
+from typing import List
+from lib.common import *
 
 
 @logger.catch()
-def get_data_from_kafka():
+def read_from_kafka() -> List[ResponseMetrics]:
     """
     Based on https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
     """
     # Call poll twice. First call will just assign partitions for our
     # consumer without actually returning anything
-    consumer = KafkaConsumer(
+    consumer_obj = KafkaConsumer(
         KAFKA_TOPIC,
         auto_offset_reset="earliest",
         bootstrap_servers=KAFKA_SERVER,
@@ -27,12 +31,19 @@ def get_data_from_kafka():
     )
     data = []
     for _ in range(2):
-        raw_msgs = consumer.poll(timeout_ms=1000)
+        raw_msgs = consumer_obj.poll(timeout_ms=1000)
         for tp, msgs in raw_msgs.items():
             for msg in msgs:
-                data.append(msg.value)
+                json_value = json.loads(msg.value)
+                value = ResponseMetrics(json_value.get('status_code'),
+                                        json_value.get(
+                                            'response_time_seconds'),
+                                        json_value.get('web_page_text'),
+                                        json_value.get('url')
+                                        )
+                data.append(value)
     # Commit offsets so we won't get the same messages again
-    consumer.commit()
+    consumer_obj.commit()
     return data
 
 
@@ -40,10 +51,13 @@ def get_data_from_kafka():
 def consumer(sleep_interval: float = 1.0):
     try:
         while True:
-            data_kafka = get_data_from_kafka()
+            data_kafka = read_from_kafka()
             if len(data_kafka) > 0:
                 logger.info(f"Received data from Kafka. len(data) ="
                             f" {len(data_kafka)}")
+                for metrics in data_kafka:
+                    send_to_database(metrics)
+                    logger.info(".. Sent to database")
             else:
                 logger.info("Kafka topic is empty")
             time.sleep(sleep_interval)

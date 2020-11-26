@@ -7,7 +7,7 @@ import psycopg2 as pg2
 from lib.common import *
 
 
-def write_message_to_db(message: ResponseMetrics):
+def send_to_database(message: ResponseMetrics):
     connect = pg2.connect(host=POSTGRESQL_HOST,
                           port=POSTGRESQL_PORT,
                           user=POSTGRESQL_USER,

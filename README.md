@@ -25,6 +25,15 @@ source setenv.sh
 run producer and consumer
 
 ```
+python3 run_producer.py https://news.ycombinator.com/ --sleep_interval 1
+python3 run_consumer.py --sleep_interval 1
+```
+
+
+check out what is written into PostgreSQL
+
+```
+python3 -c "from lib import request_db; print(request_db('select * from metrics;'))" 
 ```
 
 
