@@ -41,7 +41,7 @@ python3 -c "from lib import request_db; print(request_db('select * from metrics;
 ```
 
 
-## Installation for development / testing / debugging
+## Installation for local development / testing / debugging
 
 In order to run tests repository should be cloned and editable installation should be done.
 
@@ -53,7 +53,7 @@ source venv/bin/activate
 pip install -e .
 ```
 
-Run tests
+Run tests on local machine
 
 ```
 pytest
