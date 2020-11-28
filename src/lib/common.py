@@ -11,9 +11,6 @@ ResponseMetrics = namedtuple('ResponseMetrics',
                               'url'],
                              defaults=[None]*4)
 
-AccessFilesPaths = namedtuple('AccessFilesPaths', ['ca_file', 'cert_file',
-                                                   'key_file'])
-
 
 def check_re_pattern_page_text(text: str,
                                regexp_pattern: str = r"") -> bool:

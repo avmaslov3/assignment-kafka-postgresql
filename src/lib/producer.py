@@ -15,7 +15,6 @@ import requests
 from loguru import logger
 import sys
 from lib.settings import *
-import re
 
 logger.add("debug.log", format="{time} {level} {message}", level="DEBUG",
            rotation="1 MB", compression="zip")
@@ -29,12 +28,12 @@ def checker(url: str,
     """
     Main producer function.
     Send requests periodically to URL, collects response metrics, and sends
-    them to kafka service.
-    :param regexp_pattern: Optional regexp pattern to be searched in web
-    page content
-    :param url: Web page URL to monitor metrics from
-    :param max_n: Optional maximum number of requests, if None then forever
+    them to Kafka service.
+    :param url: Web page URL to monitor metrics from.
+    :param max_n: Optional maximum number of requests, if None then forever.
     :param sleep_interval: Optional delay between requests.
+    :param regexp_pattern: Optional regexp pattern to be searched in web
+    page content.
     """
     count = 0
     try:
@@ -43,8 +42,8 @@ def checker(url: str,
             if max_n and count > max_n:
                 break
             metrics = measure_metrics(url, regexp_pattern=regexp_pattern)
-            logger.info("Received results from URL: {}".format(metrics))
             send_to_kafka(metrics)
+            logger.info("Received results from URL: {}".format(metrics))
             logger.info("Sent to Kafka service: {}".format(metrics))
             time.sleep(sleep_interval)
     except KeyboardInterrupt:
@@ -55,8 +54,7 @@ def checker(url: str,
 def measure_metrics(url: str,
                     regexp_pattern=None) -> ResponseMetrics:
     """
-    The website checker performs the checks periodically and
-    collect the
+    The website checker performs checks periodically and collects
     - HTTP response time,
     - error code returned,
     - as well as optionally checking the returned page contents for a regexp
@@ -81,7 +79,6 @@ def measure_metrics(url: str,
     return result
 
 
-
 @logger.catch
 def send_to_kafka(result: ResponseMetrics) -> None:
     """
@@ -104,5 +101,3 @@ def send_to_kafka(result: ResponseMetrics) -> None:
 def serializer(r: ResponseMetrics):
     checker_results_as_json = json.dumps(r._asdict()).encode("utf-8")
     return checker_results_as_json
-
-

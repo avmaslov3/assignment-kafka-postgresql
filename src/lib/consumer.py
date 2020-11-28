@@ -1,7 +1,6 @@
 """
 https://help.aiven.io/en/articles/489572-getting-started-with-aiven-kafka
 """
-from lib.settings import *
 from lib.database import *
 from kafka import KafkaConsumer
 from loguru import logger
@@ -26,7 +25,6 @@ def consumer(sleep_interval: float = 1.0) -> None:
                             f" {len(data_kafka)}")
                 for metrics in data_kafka:
                     send_to_database(metrics)
-                    logger.info(".. Sent to database")
             else:
                 logger.info("Kafka topic is empty")
             time.sleep(sleep_interval)

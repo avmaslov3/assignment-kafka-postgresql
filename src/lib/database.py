@@ -9,7 +9,7 @@ from lib.common import *
 
 def send_to_database(message: ResponseMetrics) -> None:
     """
-    Send/save response metrics message into PostgreSQL instance.
+    Send/save response metrics into PostgreSQL instance.
     """
     connect = pg2.connect(host=POSTGRESQL_HOST,
                           port=POSTGRESQL_PORT,
@@ -20,7 +20,8 @@ def send_to_database(message: ResponseMetrics) -> None:
     with connect:
         with connect.cursor(cursor_factory=RealDictCursor) as cursor:
             insert_query = """insert into """ + POSTGRESQL_TABLE_NAME + \
-                           """ (url, status_code, response_time, regexp_pattern_found) values (%s, %s, %s, %s); """
+                           """ (url, status_code, response_time, 
+                           regexp_pattern_found) values (%s, %s, %s, %s); """
             cursor.execute(insert_query, (message.url,
                                           message.status_code,
                                           message.response_time_seconds,
@@ -29,8 +30,7 @@ def send_to_database(message: ResponseMetrics) -> None:
 
 def request_db(query: str):
     """
-    Function to send various queries for testing purpose.
-    E.g. - select * from ...
+    Utility function to make select queries for testing.
     """
     connect = pg2.connect(host=POSTGRESQL_HOST,
                           port=POSTGRESQL_PORT,
