@@ -1,0 +1,18 @@
+attrs==20.3.0
+certifi==2020.11.8
+chardet==3.0.4
+idna==2.10
+iniconfig==1.1.1
+kafka-python==2.0.2
+-e git+https://github.com/al31415/assignment-kafka-postgresql.git@f4cc4f2f78fa91f4800ef4f2121694597f26cf79#egg=lib
+loguru==0.5.3
+packaging==20.4
+pluggy==0.13.1
+psycopg2-binary==2.8.6
+py==1.9.0
+pyparsing==2.4.7
+pytest==6.1.2
+requests==2.25.0
+six==1.15.0
+toml==0.10.2
+urllib3==1.26.2

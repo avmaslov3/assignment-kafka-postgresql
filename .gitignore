@@ -5,7 +5,6 @@ lib.egg-info/
 *.cert
 *.key
 *.pem
-*.txt
 *.log
 *.drawio
 setenv.sh
